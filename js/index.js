@@ -26,6 +26,7 @@ const handleLoadNews = async(categoryId)=>{
     newsData = data.data;
     console.log(newsData);
     const cardContrainer = document.getElementById('card-container');
+    cardContrainer.innerHTML = "";
     newsData?.forEach((news) => {
         const div = document.createElement('div');
         div.innerHTML =   `
@@ -44,6 +45,7 @@ const handleLoadNews = async(categoryId)=>{
           <p>
           ${news?.details.slice(0,50)}
           </p>
+          <h3>Total views: ${news?.total_view ? news.total_view : 'no views'}</h3>
           <div class="card-footer flex justify-between mt-8">
             <div class="flex">
               <div>
@@ -62,7 +64,9 @@ const handleLoadNews = async(categoryId)=>{
               </div>
             </div>
             <div class="card-detaild-btn">
-              <button
+              <button 
+
+              onClick={handleModal('${news._id}')}
                 class="inline-block cursor-pointer rounded-md bg-gray-800 px-4 py-3 text-center text-sm font-semibold uppercase text-white transition duration-200 ease-in-out hover:bg-gray-900"
               >
                 Details
@@ -82,8 +86,39 @@ const handleLoadNews = async(categoryId)=>{
 
 
 
+const handleModal = async (newsID) =>{
+  console.log(newsID);
 
-handleCategory()
+  const response = await fetch(`https://openapi.programming-hero.com/api/news/${newsID}`)
+  const data = await response.json();
+  console.log(data.data[0]);
+  
+  const modalContainer = document.getElementById('modal-container')
+  const div = document.createElement('div');
+  div.innerHTML = `
+  <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Hello!</h3>
+      <p class="py-4">Press ESC key or click the button below to close</p>
+      <div class="modal-action">
+        <form method="dialog">
+          <!-- if there is a button in form, it will close the modal -->
+          <button class="btn">Close</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+  `
+  modalContainer.appendChild(div);
+  const modal = document.getElementById('my_modal_5')
+  modal.showModal();
+
+}
+
+
+
+handleCategory();
+handleLoadNews('01')
 
 
 
